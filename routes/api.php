@@ -28,4 +28,9 @@ Route::get('/get-weather', function () {
     return $response->json();
 });
 
-
+Route::get('/get-address', function () {
+    $apiKey = config('services.geoapify.key');
+    $address = request('address');
+    $response = Http::get("https://api.geoapify.com/v1/geocode/autocomplete?text=$address&apiKey=$apiKey");
+    return $response->json();
+});

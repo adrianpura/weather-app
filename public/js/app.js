@@ -5338,31 +5338,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mounted: function mounted() {
     this.fetchCurrentWeather();
     this.fetchFutureWeather();
+    this.fetchAddress();
   },
   data: function data() {
     return {
@@ -5373,10 +5353,11 @@ __webpack_require__.r(__webpack_exports__);
         icon: ""
       },
       daily: [],
+      address: "London",
       location: {
-        name: "Shuzenji",
-        lat: "35",
-        lon: "139"
+        name: "London",
+        lat: "51.5085",
+        lon: "-0.1258"
       }
     };
   },
@@ -5405,6 +5386,13 @@ __webpack_require__.r(__webpack_exports__);
         _this2.daily = data.list;
       });
     },
+    fetchAddress: function fetchAddress() {
+      fetch("/api/get-address?address=".concat(this.address)).then(function (response) {
+        return response.json();
+      }).then(function (data) {
+        console.log(data);
+      });
+    },
     capitaLizeFirstLetter: function capitaLizeFirstLetter(word) {
       return word.split(" ").map(function (word) {
         return word[0].toUpperCase() + word.substring(1);
@@ -5414,12 +5402,17 @@ __webpack_require__.r(__webpack_exports__);
       var newDate = new Date(timestamp * 1000);
       var days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
       return days[newDate.getDay()];
+    },
+    getSummary: function getSummary(weather) {
+      return {
+        description: this.capitaLizeFirstLetter(weather[0].description),
+        icon: "http://openweathermap.org/img/wn/".concat(weather[0].icon, "@2x.png")
+      };
     }
   },
-  computed: {
-    getSummary: function getSummary() {
-      console.log(this.daily[0]);
-    }
+  computed: {// getSummary() {
+    //   console.log(this.daily[0]);
+    // },
   }
 });
 
@@ -28105,21 +28098,20 @@ var render = function () {
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "w-4/6 px-4 flex items-center" }, [
-                  _c("div", [_vm._v("\n            icon\n          ")]),
+                  _c("div", [
+                    _c("img", {
+                      staticClass: "h-10 w-auto sm:h-10",
+                      attrs: { src: _vm.getSummary(day.weather).icon, alt: "" },
+                    }),
+                  ]),
                   _vm._v(" "),
-                  day.weather[0].description
-                    ? _c("div", { staticClass: "ml-3" }, [
-                        _vm._v(
-                          "\n            " +
-                            _vm._s(
-                              _vm.capitaLizeFirstLetter(
-                                day.weather[0].description
-                              )
-                            ) +
-                            "\n          "
-                        ),
-                      ])
-                    : _vm._e(),
+                  _c("div", { staticClass: "ml-3" }, [
+                    _vm._v(
+                      "\n            " +
+                        _vm._s(_vm.getSummary(day.weather).description) +
+                        "\n          "
+                    ),
+                  ]),
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "w-1/6 text-right" }, [
