@@ -48,15 +48,16 @@
           </div>
           <div class="w-4/6 px-4 flex items-center">
             <div>
-              <!-- <img
+              <img
                 class="h-10 w-auto sm:h-10"
-                src="http://openweathermap.org/img/wn/10d@2x.png"
+                :src="getSummary(day.weather).icon"
                 alt=""
-              /> -->
-              icon
+              />
             </div>
-            <div class="ml-3" v-if="day.weather[0].description">
-              {{ capitaLizeFirstLetter(day.weather[0].description) }}
+            <!-- <div class="ml-3" v-if="day.weather[0].description"> -->
+            <div class="ml-3">
+              <!-- {{ capitaLizeFirstLetter(day.weather[0].description) }} -->
+              {{ getSummary(day.weather).description }}
             </div>
           </div>
           <div class="w-1/6 text-right">
@@ -64,28 +65,6 @@
             <div>{{ Math.round(day.main.temp_min) }}°C</div>
           </div>
         </div>
-        <!-- <div class="flex items-center mt-8">
-          <div class="w-1/6 text-lg text-gray-200">MON</div>
-          <div class="w-4/6 px-4 flex items-center">
-            <div>icon</div>
-            <div class="ml-3">Cloudy with chance of showers</div>
-          </div>
-          <div class="w-1/6 text-right">
-            <div>8°C</div>
-            <div>-8°C</div>
-          </div>
-        </div> -->
-        <!-- <div class="flex items-center mt-8">
-          <div class="w-1/6 text-lg text-gray-200">MON</div>
-          <div class="w-4/6 px-4 flex items-center">
-            <div>icon</div>
-            <div class="ml-3">Cloudy with chance of showers</div>
-          </div>
-          <div class="w-1/6 text-right">
-            <div>8°C</div>
-            <div>-8°C</div>
-          </div>
-        </div> -->
       </div>
     </div>
   </div>
@@ -96,6 +75,7 @@ export default {
   mounted() {
     this.fetchCurrentWeather();
     this.fetchFutureWeather();
+    this.fetchAddress();
   },
   data() {
     return {
@@ -106,10 +86,11 @@ export default {
         icon: "",
       },
       daily: [],
+      address: "London",
       location: {
-        name: "Shuzenji",
-        lat: "35",
-        lon: "139",
+        name: "London",
+        lat: "51.5085",
+        lon: "-0.1258",
       },
     };
   },
@@ -140,6 +121,13 @@ export default {
           this.daily = data.list;
         });
     },
+    fetchAddress() {
+      fetch(`/api/get-address?address=${this.address}`)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+        });
+    },
     capitaLizeFirstLetter(word) {
       return word
         .split(" ")
@@ -153,11 +141,17 @@ export default {
       const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
       return days[newDate.getDay()];
     },
+    getSummary(weather) {
+      return {
+        description: this.capitaLizeFirstLetter(weather[0].description),
+        icon: `http://openweathermap.org/img/wn/${weather[0].icon}@2x.png`,
+      };
+    },
   },
   computed: {
-    getSummary() {
-      console.log(this.daily[0]);
-    },
+    // getSummary() {
+    //   console.log(this.daily[0]);
+    // },
   },
 };
 </script>
