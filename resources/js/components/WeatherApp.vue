@@ -1,7 +1,10 @@
 <template>
   <div class="text-white mb-8">
     <div class="places-input text-gray-800">
-      <input type="text" class="w-full" />
+      <div
+        class="autocomplete-container"
+        id="autocomplete-container-city"
+      ></div>
     </div>
     <div
       class="
@@ -75,7 +78,33 @@ export default {
   mounted() {
     this.fetchCurrentWeather();
     this.fetchFutureWeather();
-    this.fetchAddress();
+    // this.fetchAddress();
+    addressAutocomplete(
+      document.getElementById("autocomplete-container-city"),
+      (data) => {
+        // console.log("Selected city: ");
+        // console.log(data.properties.city);
+        // console.log(data.properties.county);
+        // console.log(data.properties.country);
+        // console.log(data.properties.lat);
+        // console.log(data.properties.lon);
+        this.location.name = `${data.properties.city},${data.properties.country}`;
+        this.location.lat = data.properties.lat;
+        this.location.lon = data.properties.lon;
+      },
+      {
+        placeholder: "Enter a city name here",
+      }
+    );
+  },
+  watch: {
+    location: {
+      handler(newValue, oldValue) {
+        this.fetchCurrentWeather();
+        this.fetchFutureWeather();
+      },
+      deep: true,
+    },
   },
   data() {
     return {
@@ -121,13 +150,6 @@ export default {
           this.daily = data.list;
         });
     },
-    fetchAddress() {
-      fetch(`/api/get-address?address=${this.address}`)
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-        });
-    },
     capitaLizeFirstLetter(word) {
       return word
         .split(" ")
@@ -148,10 +170,6 @@ export default {
       };
     },
   },
-  computed: {
-    // getSummary() {
-    //   console.log(this.daily[0]);
-    // },
-  },
+  computed: {},
 };
 </script>
