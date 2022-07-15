@@ -24,13 +24,13 @@ Route::get('/get-weather', function () {
     $lat = request('lat');
     $lng = request('lon');
     $endpoint = request('endpoint');
-    $response = Http::get("https://api.openweathermap.org/data/2.5/$endpoint?lat=$lat&lon=$lng&units=metric&appid=$apiKey");
+    $response = Http::get("https://api.openweathermap.org/data/2.5/$endpoint?lat=$lat&lon=$lng&units=metric&limit=5&appid=$apiKey");
     return $response->json();
 });
 
 Route::get('/get-address', function () {
     $apiKey = config('services.geoapify.key');
     $address = request('address');
-    $response = Http::get("https://api.geoapify.com/v1/geocode/autocomplete?text=$address&apiKey=$apiKey");
+    $response = Http::get("https://api.geoapify.com/v1/geocode/autocomplete?type=city&text=$address&apiKey=$apiKey");
     return $response->json();
 });

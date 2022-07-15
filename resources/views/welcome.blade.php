@@ -7,6 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Weather App</title>
     <link rel="stylesheet" href="/css/app.css">
+    <link href="/css/places.css" rel="stylesheet" type="text/css">
+    <script src="/js/places.js" defer></script>
     <script src="/js/app.js" defer></script>
 
 </head>

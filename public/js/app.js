@@ -5338,11 +5338,38 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mounted: function mounted() {
+    var _this = this;
+
     this.fetchCurrentWeather();
-    this.fetchFutureWeather();
-    this.fetchAddress();
+    this.fetchFutureWeather(); // this.fetchAddress();
+
+    addressAutocomplete(document.getElementById("autocomplete-container-city"), function (data) {
+      // console.log("Selected city: ");
+      // console.log(data.properties.city);
+      // console.log(data.properties.county);
+      // console.log(data.properties.country);
+      // console.log(data.properties.lat);
+      // console.log(data.properties.lon);
+      _this.location.name = "".concat(data.properties.city, ",").concat(data.properties.country);
+      _this.location.lat = data.properties.lat;
+      _this.location.lon = data.properties.lon;
+    }, {
+      placeholder: "Enter a city name here"
+    });
+  },
+  watch: {
+    location: {
+      handler: function handler(newValue, oldValue) {
+        this.fetchCurrentWeather();
+        this.fetchFutureWeather();
+      },
+      deep: true
+    }
   },
   data: function data() {
     return {
@@ -5363,34 +5390,27 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     fetchCurrentWeather: function fetchCurrentWeather() {
-      var _this = this;
+      var _this2 = this;
 
       fetch("/api/get-weather?lat=".concat(this.location.lat, "&lon=").concat(this.location.lon, "&endpoint=weather")).then(function (response) {
         return response.json();
       }).then(function (data) {
         //   console.log(data);
-        var description = _this.capitaLizeFirstLetter(data.weather[0].description);
+        var description = _this2.capitaLizeFirstLetter(data.weather[0].description);
 
-        _this.currentTemp.actual = Math.round(data.main.temp);
-        _this.currentTemp.feels = Math.round(data.main.feels_like);
-        _this.currentTemp.summary = description;
-        _this.currentTemp.icon = data.weather[0].icon;
+        _this2.currentTemp.actual = Math.round(data.main.temp);
+        _this2.currentTemp.feels = Math.round(data.main.feels_like);
+        _this2.currentTemp.summary = description;
+        _this2.currentTemp.icon = data.weather[0].icon;
       });
     },
     fetchFutureWeather: function fetchFutureWeather() {
-      var _this2 = this;
+      var _this3 = this;
 
       fetch("/api/get-weather?lat=".concat(this.location.lat, "&lon=").concat(this.location.lon, "&endpoint=forecast")).then(function (response) {
         return response.json();
       }).then(function (data) {
-        _this2.daily = data.list;
-      });
-    },
-    fetchAddress: function fetchAddress() {
-      fetch("/api/get-address?address=".concat(this.address)).then(function (response) {
-        return response.json();
-      }).then(function (data) {
-        console.log(data);
+        _this3.daily = data.list;
       });
     },
     capitaLizeFirstLetter: function capitaLizeFirstLetter(word) {
@@ -5410,10 +5430,7 @@ __webpack_require__.r(__webpack_exports__);
       };
     }
   },
-  computed: {// getSummary() {
-    //   console.log(this.daily[0]);
-    // },
-  }
+  computed: {}
 });
 
 /***/ }),
@@ -28138,7 +28155,10 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "places-input text-gray-800" }, [
-      _c("input", { staticClass: "w-full", attrs: { type: "text" } }),
+      _c("div", {
+        staticClass: "autocomplete-container",
+        attrs: { id: "autocomplete-container-city" },
+      }),
     ])
   },
   function () {
