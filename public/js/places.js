@@ -11,7 +11,13 @@ function addressAutocomplete(containerElement, callback, options) {
     var inputElement = document.createElement("input");
     inputElement.setAttribute("type", "text");
     inputElement.setAttribute("placeholder", options.placeholder);
+    // inputElement.classList.add("test");
     containerElement.appendChild(inputElement);
+    containerElement.classList.add("flex")
+    containerElement.classList.add("font-sans")
+    containerElement.classList.add("rounded-lg")
+    containerElement.classList.add("overflow-hidden")
+    containerElement.classList.add("bg-gray-50")
 
     // add input field clear button
     var clearButton = document.createElement("div");
@@ -60,7 +66,7 @@ function addressAutocomplete(containerElement, callback, options) {
         /* Create a new promise and send geocoding request */
         var promise = new Promise((resolve, reject) => {
             currentPromiseReject = reject;
-
+            console.log(currentValue)
             // var url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(currentValue)}&limit=5&apiKey=${apiKey}`;
             var url = `/api/get-address?address=${encodeURIComponent(currentValue)}`;
 
@@ -71,6 +77,7 @@ function addressAutocomplete(containerElement, callback, options) {
             fetch(url)
                 .then(response => {
                     // check if the call was successful
+                    console.log(response)
                     if (response.ok) {
                         response.json().then(data => resolve(data));
                     } else {
@@ -104,6 +111,7 @@ function addressAutocomplete(containerElement, callback, options) {
                     closeDropDownList();
                 });
 
+
                 autocompleteItemsElement.appendChild(itemElement);
             });
         }, (err) => {
@@ -118,20 +126,20 @@ function addressAutocomplete(containerElement, callback, options) {
         var autocompleteItemsElement = containerElement.querySelector(".autocomplete-items");
         if (autocompleteItemsElement) {
             var itemElements = autocompleteItemsElement.getElementsByTagName("div");
-            if (e.keyCode == 40) {
+            if (e.key == "ArrowDown") {
                 e.preventDefault();
                 /*If the arrow DOWN key is pressed, increase the focusedItemIndex variable:*/
                 focusedItemIndex = focusedItemIndex !== itemElements.length - 1 ? focusedItemIndex + 1 : 0;
                 /*and and make the current item more visible:*/
                 setActive(itemElements, focusedItemIndex);
-            } else if (e.keyCode == 38) {
+            } else if (e.key == "ArrowUp") {
                 e.preventDefault();
 
                 /*If the arrow UP key is pressed, decrease the focusedItemIndex variable:*/
                 focusedItemIndex = focusedItemIndex !== 0 ? focusedItemIndex - 1 : focusedItemIndex = (itemElements.length - 1);
                 /*and and make the current item more visible:*/
                 setActive(itemElements, focusedItemIndex);
-            } else if (e.keyCode == 13) {
+            } else if (e.key == "Enter") {
                 /* If the ENTER key is pressed and value as selected, close the list*/
                 e.preventDefault();
                 if (focusedItemIndex > -1) {
@@ -139,10 +147,15 @@ function addressAutocomplete(containerElement, callback, options) {
                 }
             }
         } else {
-            if (e.keyCode == 40) {
+            if (e.key == "ArrowDown") {
                 /* Open dropdown list again */
                 var event = document.createEvent('Event');
                 event.initEvent('input', true, true);
+
+                // var event = new Event( 'input', true, true );
+
+
+
                 inputElement.dispatchEvent(event);
             }
         }
