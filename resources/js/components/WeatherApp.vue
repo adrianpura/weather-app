@@ -1,10 +1,7 @@
 <template>
   <div class="text-white mb-8">
     <div class="places-input text-gray-800">
-      <div
-        class="autocomplete-container"
-        id="autocomplete-container-city"
-      ></div>
+      <div class="autocomplete-container" id="autocomplete"></div>
     </div>
     <div
       class="
@@ -48,6 +45,7 @@
           <!-- v-if="index < 5" make daily a computed property-->
           <div class="w-1/6 text-lg text-gray-200">
             {{ toDayOfWeek(day.dt) }}
+            <div class="text-sm overflow-hidden">{{ toHour(day.dt) }}</div>
           </div>
           <div class="w-4/6 px-4 flex items-center">
             <div>
@@ -74,28 +72,33 @@
 </template>
 
 <script>
+import { GeocoderAutocomplete } from "@geoapify/geocoder-autocomplete";
 export default {
   mounted() {
     this.fetchCurrentWeather();
     this.fetchFutureWeather();
-    // this.fetchAddress();
-    addressAutocomplete(
-      document.getElementById("autocomplete-container-city"),
-      (data) => {
-        // console.log("Selected city: ");
-        // console.log(data.properties.city);
-        // console.log(data.properties.county);
-        // console.log(data.properties.country);
-        // console.log(data.properties.lat);
-        // console.log(data.properties.lon);
-        this.location.name = `${data.properties.city},${data.properties.country}`;
-        this.location.lat = data.properties.lat;
-        this.location.lon = data.properties.lon;
-      },
+
+    const autocomplete = new GeocoderAutocomplete(
+      document.getElementById("autocomplete"),
+      "48ebd1d2ae4c47088ba7c1588f2dd06e",
       {
-        placeholder: "Enter a city name here",
+        /* Geocoder options */
+        type: "city",
       }
     );
+
+    autocomplete.on("select", (location) => {
+      // check selected location here
+      if (location) {
+        this.location.name = `${location.properties.city},${location.properties.country}`;
+        this.location.lat = location.properties.lat;
+        this.location.lon = location.properties.lon;
+      }
+    });
+
+    // autocomplete.on("suggestions", (suggestions) => {
+    //   // process suggestions here
+    // });
   },
   watch: {
     location: {
@@ -115,11 +118,11 @@ export default {
         icon: "",
       },
       daily: [],
-      address: "London",
+      address: "Tokyo",
       location: {
-        name: "London",
-        lat: "51.5085",
-        lon: "-0.1258",
+        name: "Tokyo",
+        lat: "33.5230707",
+        lon: "134.2429417",
       },
     };
   },
@@ -162,6 +165,22 @@ export default {
       const newDate = new Date(timestamp * 1000);
       const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
       return days[newDate.getDay()];
+    },
+    toHour(timestamp) {
+      const newDate = new Date(timestamp * 1000);
+      const hours = newDate.getHours();
+
+      var timeValue;
+
+      if (hours > 0 && hours <= 12) {
+        timeValue = "" + hours;
+      } else if (hours > 12) {
+        timeValue = "" + (hours - 12);
+      } else if (hours == 0) {
+        timeValue = "12";
+      }
+      timeValue += hours >= 12 ? " PM" : " AM"; // get AM/PM
+      return timeValue;
     },
     getSummary(weather) {
       return {

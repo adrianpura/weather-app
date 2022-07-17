@@ -28,6 +28,7 @@
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
+        "@geoapify/geocoder-autocomplete": "^1.4.1",
         "browser-sync-webpack-plugin": "^2.3.0",
         "file-loader": "^6.2.0"
     }
