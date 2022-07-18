@@ -13,6 +13,6 @@ Check the live demo app at [Weather App](https://weather-app-adrian.herokuapp.co
 - Run __`composer install`__
 - Run __`php artisan key:generate --ansi`__
 - Run __`npm install && npm run dev`__
-- Create free account on [Weatherbit](https://www.weatherbit.io/) and get the API Key
-  and set it in the __`.env`__ file as __`WEATHER_BIT_API_KEY`__
+- Create free account on [OpenWeather](https://openweathermap.org/),[Geoapify](https://www.geoapify.com/), and get the API Key
+  and set it in the __`.env`__ file as __`OPEN_WEATHER_KEY`__ and __`GEOAPIFY_KEY`__
 - That's it: launch with __`php artisan serve`__ 
