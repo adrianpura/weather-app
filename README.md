@@ -8,7 +8,7 @@ Check the live demo app at [Weather App](https://weather-app-adrian.herokuapp.co
 
 ## How to install
 
-- Clone the repository with __`git clone https://github.com/aliadhillon/weather-app.git`__
+- Clone the repository with __`git clone https://github.com/adrianpura/weather-app.git`__
 - Copy __`.env.example`__ file to __`.env`__
 - Run __`composer install`__
 - Run __`php artisan key:generate --ansi`__
